@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0dkxm42" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="Process_0mngs9g" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0luvvky</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0luvvky" sourceRef="StartEvent_1" targetRef="cadastroFinanciamento" />
+    <bpmn:userTask id="cadastroFinanciamento" name="Cadastro de Financiamento" camunda:formKey="">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="estado" label="estado" type="enum">
+            <camunda:value id="SP" name="SP" />
+            <camunda:value id="BH" name="BH" />
+            <camunda:value id="MA" name="MA" />
+            <camunda:value id="RJ" name="RJ" />
+            <camunda:value id="PR" name="PR" />
+          </camunda:formField>
+          <camunda:formField id="valor" label="valor" type="long" defaultValue="0" />
+          <camunda:formField id="quantidadeMeses" label="Qtd Meses" type="long" defaultValue="12" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0luvvky</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ke9f0m</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_17i9lp9" sourceRef="Activity_0b5192s" targetRef="Activity_08qby9w" />
+    <bpmn:userTask id="Activity_08qby9w" name="Total">
+      <bpmn:incoming>Flow_17i9lp9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mzllue</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_14hfi62">
+      <bpmn:incoming>Flow_1mzllue</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1mzllue" sourceRef="Activity_08qby9w" targetRef="Event_14hfi62" />
+    <bpmn:userTask id="Activity_0b5192s" name="Calcula Parcelas">
+      <bpmn:incoming>Flow_1jqohbo</bpmn:incoming>
+      <bpmn:outgoing>Flow_17i9lp9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0pjgosd" sourceRef="Gateway_18rpflx" targetRef="calculoClass" />
+    <bpmn:sequenceFlow id="Flow_1s2hq8g" sourceRef="calculoClass" targetRef="Gateway_0z9s0bu" />
+    <bpmn:serviceTask id="calculoClass" name="Calculo class" camunda:class="com.workflow.event.ValorTotalJurosDelegate">
+      <bpmn:incoming>Flow_0pjgosd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1s2hq8g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="calculoDelegate" name="Calculo delegate" camunda:delegateExpression="${Calcular}">
+      <bpmn:incoming>Flow_07887gn</bpmn:incoming>
+      <bpmn:outgoing>Flow_19cd2rn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_18rpflx" default="Flow_0pjgosd">
+      <bpmn:incoming>Flow_1ke9f0m</bpmn:incoming>
+      <bpmn:outgoing>Flow_07887gn</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0pjgosd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1ke9f0m" sourceRef="cadastroFinanciamento" targetRef="Gateway_18rpflx" />
+    <bpmn:sequenceFlow id="Flow_07887gn" sourceRef="Gateway_18rpflx" targetRef="calculoDelegate">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${estado == "SP"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0z9s0bu">
+      <bpmn:incoming>Flow_19cd2rn</bpmn:incoming>
+      <bpmn:incoming>Flow_1s2hq8g</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jqohbo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_19cd2rn" sourceRef="calculoDelegate" targetRef="Gateway_0z9s0bu" />
+    <bpmn:sequenceFlow id="Flow_1jqohbo" sourceRef="Gateway_0z9s0bu" targetRef="Activity_0b5192s" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0mngs9g">
+      <bpmndi:BPMNEdge id="Flow_0luvvky_di" bpmnElement="Flow_0luvvky">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17i9lp9_di" bpmnElement="Flow_17i9lp9">
+        <di:waypoint x="940" y="177" />
+        <di:waypoint x="1030" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mzllue_di" bpmnElement="Flow_1mzllue">
+        <di:waypoint x="1130" y="177" />
+        <di:waypoint x="1222" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pjgosd_di" bpmnElement="Flow_0pjgosd">
+        <di:waypoint x="450" y="202" />
+        <di:waypoint x="450" y="280" />
+        <di:waypoint x="520" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s2hq8g_di" bpmnElement="Flow_1s2hq8g">
+        <di:waypoint x="620" y="280" />
+        <di:waypoint x="730" y="280" />
+        <di:waypoint x="730" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ke9f0m_di" bpmnElement="Flow_1ke9f0m">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="425" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07887gn_di" bpmnElement="Flow_07887gn">
+        <di:waypoint x="450" y="152" />
+        <di:waypoint x="450" y="80" />
+        <di:waypoint x="520" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19cd2rn_di" bpmnElement="Flow_19cd2rn">
+        <di:waypoint x="620" y="80" />
+        <di:waypoint x="730" y="80" />
+        <di:waypoint x="730" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jqohbo_di" bpmnElement="Flow_1jqohbo">
+        <di:waypoint x="755" y="177" />
+        <di:waypoint x="840" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xrasrm_di" bpmnElement="cadastroFinanciamento">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_056r24y_di" bpmnElement="Activity_08qby9w">
+        <dc:Bounds x="1030" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14hfi62_di" bpmnElement="Event_14hfi62">
+        <dc:Bounds x="1222" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1693aqs_di" bpmnElement="Activity_0b5192s">
+        <dc:Bounds x="840" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_046ru1v_di" bpmnElement="calculoClass">
+        <dc:Bounds x="520" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_098782y_di" bpmnElement="calculoDelegate">
+        <dc:Bounds x="520" y="40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_18rpflx_di" bpmnElement="Gateway_18rpflx" isMarkerVisible="true">
+        <dc:Bounds x="425" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0z9s0bu_di" bpmnElement="Gateway_0z9s0bu" isMarkerVisible="true">
+        <dc:Bounds x="705" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
