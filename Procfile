@@ -1,0 +1,1 @@
+web: java -jar ./build/libs/pipoca1-1.0-SNAPSHOT --server.port=$PORT
