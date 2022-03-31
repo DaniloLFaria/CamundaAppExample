@@ -1,1 +1,1 @@
-web: java -jar ./build/libs/pipoca1-1.0-SNAPSHOT.jar --server.port=$PORT
+web: java -jar ./build/libs/pipoca1-1.0-SNAPSHOT.jar --spring.profiles.active=prd --server.port=$PORT
